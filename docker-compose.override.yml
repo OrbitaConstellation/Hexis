@@ -1,0 +1,37 @@
+services:
+  db:
+    container_name: orbita_hexis_brain
+    ports:
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${POSTGRES_PORT:-43915}:5432"
+    volumes:
+      - orbita_postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    container_name: orbita_hexis_rabbitmq
+    ports:
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${RABBITMQ_PORT:-5682}:5672"
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${RABBITMQ_MANAGEMENT_PORT:-15682}:15672"
+    volumes:
+      - orbita_rabbitmq_data:/var/lib/rabbitmq
+
+  embeddings:
+    container_name: orbita_hexis_embeddings
+    volumes:
+      - orbita_embeddings_cache:/data
+
+  heartbeat_worker:
+    container_name: orbita_hexis_heartbeat_worker
+
+  maintenance_worker:
+    container_name: orbita_hexis_maintenance_worker
+
+volumes:
+  orbita_postgres_data:
+    name: orbita_postgres_data
+    external: true
+  orbita_embeddings_cache:
+    name: orbita_embeddings_cache
+    external: true
+  orbita_rabbitmq_data:
+    name: orbita_rabbitmq_data
+    external: true
